@@ -8,25 +8,21 @@ Introduction
 
 This is an example of using R to visualize Canadian climate data.
 
-When you click the **Knit** button a document will be generated that includes both content as well as the output of any embedded R code chunks within the document. You can embed an R code chunk like this:
-
 ``` r
-summary(cars)
+library(weathercan)
+library(weathercan)
+library(plotly)
+library(data.table)
+# plotting Temperature data from Kamloops, BC
+weather_data <- as.data.table(weathercan::kamloops)
+plot(weather_data$time, weather_data$temp)
 ```
 
-    ##      speed           dist       
-    ##  Min.   : 4.0   Min.   :  2.00  
-    ##  1st Qu.:12.0   1st Qu.: 26.00  
-    ##  Median :15.0   Median : 36.00  
-    ##  Mean   :15.4   Mean   : 42.98  
-    ##  3rd Qu.:19.0   3rd Qu.: 56.00  
-    ##  Max.   :25.0   Max.   :120.00
+![](Climate_data_files/figure-markdown_github/unnamed-chunk-1-1.png)
 
-Including Plots
----------------
-
-You can also embed plots, for example:
-
-![](Climate_data_files/figure-markdown_github/pressure-1.png)
-
-Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot.
+<!-- ## Including Plots -->
+<!-- You can also embed plots, for example: -->
+<!-- ```{r pressure, echo=FALSE} -->
+<!-- plot(pressure) -->
+<!-- ``` -->
+<!-- Note that the `echo = FALSE` parameter was added to the code chunk to prevent printing of the R code that generated the plot. -->
