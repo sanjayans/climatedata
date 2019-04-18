@@ -14,14 +14,16 @@ library(plotly)
 library(data.table)
 library(ggplot2)
 # downloading weather data for 2018 for Morden, MB. 
-morden_hourly <- weather_dl(station_ids = 29593, start = "2018-01-01", end = "2018-12-31")
-morden_daily <- weather_dl(station_ids = c(3626), interval = "day")
-#morden_hourly <- as.data.table(weathercan::kamloops)
-#morden_daily <- read.csv("C:/Users/Sanjay/Desktop/R/climatedata/morden_daily.csv")
-#morden_hourly <- read.csv("C:/Users/Sanjay/Desktop/R/climatedata/morden_hourly.csv")
+#morden_hourly <- weather_dl(station_ids = 29593, start = "2018-01-01", end = "2018-12-31")
+#morden_daily <- weather_dl(station_ids = c(3626), interval = "day")
 
-morden_daily <- as.data.table(morden_daily)
+morden_hourly <- read.csv("C:/Users/Sanjay/Desktop/R/climatedata/morden_hourly.csv", stringsAsFactors=FALSE)
 morden_hourly <- as.data.table(morden_hourly)
+morden_hourly[, time := as.POSIXct(time, format = "%Y-%m-%d %H:%M")]
+
+morden_daily <- read.csv("C:/Users/Sanjay/Desktop/R/climatedata/morden_daily.csv", stringsAsFactors=FALSE)
+morden_daily <- as.data.table(morden_daily)
+morden_daily[, date := as.POSIXct(date, format = "%Y-%m-%d")]
 
 plot1 <- ggplot(morden_hourly, aes(x = time,
                                   y = temp)) + 
@@ -92,6 +94,20 @@ plot1
 ```
 
 ![](Climate_data_files/figure-markdown_github/unnamed-chunk-6-1.png)
+
+``` r
+longterm_mean <- morden_daily[ , mean(mean_temp, na.rm = TRUE), by = c("year")]
+longterm_mean[ , DOY := .I]
+
+plot1 <- ggplot(longterm_mean, aes(x = year,
+                                  y = V1)) + 
+  geom_point(aes(colour = V1)) +
+  scale_color_continuous(name = "Temperature",
+                         low = "blue", high = "red")
+plot1
+```
+
+![](Climate_data_files/figure-markdown_github/unnamed-chunk-7-1.png)
 
 <!-- ## Including Plots -->
 <!-- You can also embed plots, for example: -->
