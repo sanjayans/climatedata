@@ -2,7 +2,7 @@
 title: "Visualize Canadian Climate data"
 author: "Sanjayan Sachithanantham"
 date: "April 13, 2019"
-output: github_document
+output: html_document
 always_allow_html: yes
 ---
 
@@ -23,7 +23,7 @@ library(data.table)
 library(ggplot2)
 # downloading weather data for 2018 for Morden, MB. 
 #morden_hourly <- weather_dl(station_ids = 29593, start = "2018-01-01", end = "2018-12-31")
-#morden_daily <- weather_dl(station_ids = c(3626), interval = "day")
+#morden_daily <- weather_dl(station_ids = c(3626, 29593), interval = "day")
 
 morden_hourly <- read.csv("C:/Users/Sanjay/Desktop/R/climatedata/morden_hourly.csv", stringsAsFactors=FALSE)
 morden_hourly <- as.data.table(morden_hourly)
@@ -93,7 +93,7 @@ plot1
 ```
 
 ```{r message = FALSE, warning = FALSE}
-longterm_mean <- morden_daily[ , mean(mean_temp, na.rm = TRUE), by = c("year")]
+longterm_mean <- morden_daily[ , mean(mean_temp), by = c("year")]
 longterm_mean[ , DOY := .I]
 
 plot1 <- ggplot(longterm_mean, aes(x = year,
@@ -105,7 +105,10 @@ plot1
 ```
 
 
-
+```{r}
+p <- plot_ly(economics, x = ~date, y = ~unemploy / pop)
+p
+```
 
 <!-- ## Including Plots -->
 
