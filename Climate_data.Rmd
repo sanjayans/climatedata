@@ -2,7 +2,7 @@
 title: "Visualize Canadian Climate data"
 author: "Sanjayan Sachithanantham"
 date: "April 13, 2019"
-output: html_document
+output: github_document
 always_allow_html: yes
 ---
 
@@ -13,7 +13,7 @@ knitr::opts_chunk$set(echo = TRUE)
 ## Introduction
 
 This is an example of using R to visualize Canadian climate data.
-The graph below shows the hourly temperature values at Morden, MB.
+The graph below shows the hourly temperature values at Brandon, MB in 2018.
 
 
 ```{r message = FALSE, warning = FALSE}
@@ -21,19 +21,27 @@ library(weathercan)
 library(plotly)
 library(data.table)
 library(ggplot2)
-# downloading weather data for 2018 for Morden, MB. 
+# downloading weather data for Morden, MB. 
 #morden_hourly <- weather_dl(station_ids = 29593, start = "2018-01-01", end = "2018-12-31")
 #morden_daily <- weather_dl(station_ids = c(3626, 29593), interval = "day")
 
-morden_hourly <- read.csv("C:/Users/Sanjay/Desktop/R/climatedata/morden_hourly.csv", stringsAsFactors=FALSE)
-morden_hourly <- as.data.table(morden_hourly)
-morden_hourly[, time := as.POSIXct(time, format = "%Y-%m-%d %H:%M")]
+# downloading weather data for Brandon, MB. 
+#brandon_hourly <- weather_dl(station_ids = 49909, start = "2018-01-01", end = "2018-12-31")
+#brandon_daily <- weather_dl(station_ids = c(3472, 49909), interval = "day")
 
-morden_daily <- read.csv("C:/Users/Sanjay/Desktop/R/climatedata/morden_daily.csv", stringsAsFactors=FALSE)
-morden_daily <- as.data.table(morden_daily)
-morden_daily[, date := as.POSIXct(date, format = "%Y-%m-%d")]
+#write.csv(brandon_hourly, "brandon_hourly.csv")
+#write.csv(brandon_daily, "brandon_daily.csv")
 
-plot1 <- ggplot(morden_hourly, aes(x = time,
+
+hourly_data <- read.csv("C:/Users/Sanjay/Desktop/R/climatedata/brandon_hourly.csv", stringsAsFactors=FALSE)
+hourly_data <- as.data.table(hourly_data)
+hourly_data[, time := as.POSIXct(time, format = "%Y-%m-%d %H:%M")]
+
+daily_data <- read.csv("C:/Users/Sanjay/Desktop/R/climatedata/brandon_daily.csv", stringsAsFactors=FALSE)
+daily_data <- as.data.table(daily_data)
+daily_data[, date := as.POSIXct(date, format = "%Y-%m-%d")]
+
+plot1 <- ggplot(hourly_data, aes(x = time,
                                   y = temp)) + 
   geom_point()
 plot1
@@ -42,7 +50,7 @@ plot1
 Let's change the colour of the plot to red.
 
 ```{r message = FALSE, warning = FALSE}
-plot1 <- ggplot(morden_hourly, aes(x = time,
+plot1 <- ggplot(hourly_data, aes(x = time,
                                   y = temp)) + 
   geom_point( colour = "red")
 plot1
@@ -51,7 +59,7 @@ plot1
 Now we can change it to gradient of colours based on temperature.
 
 ```{r message = FALSE, warning = FALSE}
-plot1 <- ggplot(morden_hourly, aes(x = time,
+plot1 <- ggplot(hourly_data, aes(x = time,
                                   y = temp, colour = temp)) + 
   geom_point()
 plot1
@@ -60,7 +68,7 @@ plot1
 Now we add a trendline to see the seasonal changes in temperature.
 
 ```{r message = FALSE, warning = FALSE}
-plot1 <- ggplot(morden_hourly, aes(x = time,
+plot1 <- ggplot(hourly_data, aes(x = time,
                                   y = temp, colour = temp)) + 
   geom_point()+
   geom_smooth()
@@ -71,7 +79,7 @@ Now we will specify the colours of the gradient we want use it for the temperatu
 
 
 ```{r message = FALSE, warning = FALSE}
-plot1 <- ggplot(morden_hourly, aes(x = time,
+plot1 <- ggplot(hourly_data, aes(x = time,
                                   y = temp)) + 
   geom_point(aes(colour = temp)) +
   scale_color_continuous(name = "Temperature",
@@ -81,7 +89,7 @@ plot1
 ```
 
 ```{r message = FALSE, warning = FALSE}
-longterm_mean <- morden_daily[ , mean(mean_temp, na.rm = TRUE), by = c("month", "day")]
+longterm_mean <- daily_data[ , mean(mean_temp, na.rm = TRUE), by = c("month", "day")]
 longterm_mean[ , DOY := .I]
 
 plot1 <- ggplot(longterm_mean, aes(x = DOY,
@@ -93,7 +101,7 @@ plot1
 ```
 
 ```{r message = FALSE, warning = FALSE}
-longterm_mean <- morden_daily[ , mean(mean_temp), by = c("year")]
+longterm_mean <- daily_data[ , mean(mean_temp), by = c("year")]
 longterm_mean[ , DOY := .I]
 
 plot1 <- ggplot(longterm_mean, aes(x = year,
@@ -105,10 +113,7 @@ plot1
 ```
 
 
-```{r}
-p <- plot_ly(economics, x = ~date, y = ~unemploy / pop)
-p
-```
+
 
 <!-- ## Including Plots -->
 
